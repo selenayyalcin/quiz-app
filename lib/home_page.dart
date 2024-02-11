@@ -19,6 +19,10 @@ class _HomePageState extends State<HomePage> {
   int number = 0;
   late Timer _timer;
   int _secondRemaining = 15;
+  int questionNumber = 1;
+  String? selectedValue;
+  int trueAnswer = 0;
+  int falseAnswer = 0;
 
   Future api() async {
     final response =
@@ -53,9 +57,9 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Container(
                     height: 240,
-                    width: 390,
+                    width: 395,
                     decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 180, 66, 66),
+                        color: const Color.fromARGB(255, 171, 87, 182),
                         borderRadius: BorderRadius.circular(20)),
                   ),
                   Positioned(
@@ -72,31 +76,19 @@ class _HomePageState extends State<HomePage> {
                                 offset: Offset(0, 1),
                                 blurRadius: 5,
                                 spreadRadius: 3,
-                                color: Color.fromARGB(255, 223, 130, 130))
+                                color: Color.fromARGB(255, 171, 87, 182))
                           ]),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 18),
                         child: Column(children: [
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'abc',
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 20),
-                              ),
-                              Text(
-                                'abc',
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 20),
-                              )
-                            ],
+                          const SizedBox(
+                            height: 20,
                           ),
-                          const Center(
+                          Center(
                             child: Text(
-                              'Question 3/10',
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 180, 66, 66),
+                              'Question $questionNumber/10',
+                              style: const TextStyle(
+                                  color: Color.fromARGB(255, 103, 59, 109),
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -120,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                           child: Text(
                         _secondRemaining.toString(),
                         style: const TextStyle(
-                            color: Color.fromARGB(255, 180, 66, 66),
+                            color: Color.fromARGB(255, 98, 57, 104),
                             fontSize: 25),
                       )),
                     ),
@@ -134,7 +126,16 @@ class _HomePageState extends State<HomePage> {
             children: (responseData.isNotEmpty &&
                     responseData[number]['incorrect_answers'] != null)
                 ? shuffledOptions.map((option) {
-                    return Options(option: option.toString());
+                    return Options(
+                      option: option.toString(),
+                      groupValue: selectedValue,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedValue = value;
+                          isTrue();
+                        });
+                      },
+                    );
                   }).toList()
                 : [],
           ),
@@ -145,7 +146,7 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.symmetric(horizontal: 18),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: const Color.fromARGB(255, 180, 66, 66),
+                primary: const Color.fromARGB(255, 171, 87, 182),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 shape: RoundedRectangleBorder(
@@ -175,14 +176,20 @@ class _HomePageState extends State<HomePage> {
     }
     setState(() {
       number += 1;
+      questionNumber++;
       updateShuffleOption();
       _secondRemaining = 15;
     });
   }
 
   void completed() {
-    Navigator.pushReplacement(context as BuildContext,
-        MaterialPageRoute(builder: (context) => Completed()));
+    Navigator.pushReplacement(
+        context as BuildContext,
+        MaterialPageRoute(
+            builder: (context) => Completed(
+                  trueAnswer: trueAnswer,
+                  falseAnswer: falseAnswer,
+                )));
   }
 
   void updateShuffleOption() {
@@ -212,5 +219,13 @@ class _HomePageState extends State<HomePage> {
         }
       });
     });
+  }
+
+  void isTrue() {
+    if (selectedValue == responseData[number]['correct_answer']) {
+      trueAnswer++;
+    } else {
+      falseAnswer++;
+    }
   }
 }

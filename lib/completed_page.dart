@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/home_page.dart';
 
 class Completed extends StatelessWidget {
-  const Completed({super.key});
+  final int trueAnswer;
+  final int falseAnswer;
+  //int score = trueAnswer * 10;
+
+  Completed({super.key, required this.falseAnswer, required this.trueAnswer});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +22,7 @@ class Completed extends StatelessWidget {
                   height: 340,
                   width: 410,
                   decoration: BoxDecoration(
-                    color: Colors.black,
+                    color: const Color.fromARGB(255, 171, 87, 182),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Center(
@@ -40,23 +44,24 @@ class Completed extends StatelessWidget {
                                   'Your Score',
                                   style: TextStyle(
                                     fontSize: 20,
-                                    color: Colors.black,
+                                    color: Color.fromARGB(255, 103, 31, 112),
                                   ),
                                 ),
                                 RichText(
-                                  text: const TextSpan(
-                                    text: '100',
-                                    style: TextStyle(
+                                  text: TextSpan(
+                                    text: '${trueAnswer * 10}',
+                                    style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.black,
+                                      color: Color.fromARGB(255, 171, 87, 182),
                                     ),
-                                    children: [
+                                    children: const [
                                       TextSpan(
                                         text: 'pt',
                                         style: TextStyle(
                                           fontSize: 15,
-                                          color: Colors.black,
+                                          color:
+                                              Color.fromARGB(255, 171, 87, 182),
                                         ),
                                       )
                                     ],
@@ -83,7 +88,8 @@ class Completed extends StatelessWidget {
                         BoxShadow(
                           blurRadius: 5,
                           spreadRadius: 3,
-                          color: Colors.red.withOpacity(.7),
+                          color: const Color.fromARGB(255, 171, 87, 182)
+                              .withOpacity(.7),
                           offset: const Offset(0, 1),
                         ),
                       ],
@@ -108,7 +114,8 @@ class Completed extends StatelessWidget {
                                             width: 15,
                                             decoration: const BoxDecoration(
                                               shape: BoxShape.circle,
-                                              color: Colors.black,
+                                              color: Color.fromARGB(
+                                                  255, 171, 87, 182),
                                             ),
                                           ),
                                           const Text(
@@ -116,7 +123,8 @@ class Completed extends StatelessWidget {
                                             style: TextStyle(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 20,
-                                              color: Colors.red,
+                                              color: Color.fromARGB(
+                                                  255, 171, 87, 182),
                                             ),
                                           )
                                         ],
@@ -136,7 +144,8 @@ class Completed extends StatelessWidget {
                                             width: 15,
                                             decoration: const BoxDecoration(
                                               shape: BoxShape.circle,
-                                              color: Colors.black,
+                                              color: Color.fromARGB(
+                                                  255, 171, 87, 182),
                                             ),
                                           ),
                                           const Text(
@@ -144,7 +153,8 @@ class Completed extends StatelessWidget {
                                             style: TextStyle(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 20,
-                                              color: Colors.red,
+                                              color: Color.fromARGB(
+                                                  255, 171, 87, 182),
                                             ),
                                           )
                                         ],
@@ -175,9 +185,12 @@ class Completed extends StatelessWidget {
                                               color: Colors.green,
                                             ),
                                           ),
-                                          const Text(
-                                            '07',
-                                            style: TextStyle(
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            '$trueAnswer',
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 20,
                                               color: Colors.green,
@@ -206,9 +219,12 @@ class Completed extends StatelessWidget {
                                                 color: Colors.red,
                                               ),
                                             ),
-                                            const Text(
-                                              '03',
-                                              style: TextStyle(
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            Text(
+                                              '$falseAnswer',
+                                              style: const TextStyle(
                                                 fontWeight: FontWeight.w500,
                                                 fontSize: 20,
                                                 color: Colors.red,
@@ -255,8 +271,9 @@ class Completed extends StatelessWidget {
                                 ),
                               );
                             },
-                            child: CircleAvatar(
-                              backgroundColor: Colors.red,
+                            child: const CircleAvatar(
+                              backgroundColor:
+                                  Color.fromARGB(255, 171, 87, 182),
                               radius: 35,
                               child: Center(
                                 child: Icon(
@@ -279,10 +296,10 @@ class Completed extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Column(
+                      const Column(
                         children: [
                           CircleAvatar(
-                            backgroundColor: Colors.red,
+                            backgroundColor: Color.fromARGB(255, 171, 87, 182),
                             radius: 35,
                             child: Center(
                               child: Icon(
@@ -304,10 +321,10 @@ class Completed extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Column(
+                      const Column(
                         children: [
                           CircleAvatar(
-                            backgroundColor: Colors.red,
+                            backgroundColor: Color.fromARGB(255, 171, 87, 182),
                             radius: 35,
                             child: Center(
                               child: Icon(
@@ -332,15 +349,15 @@ class Completed extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 30,
                   ),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
                         children: [
                           CircleAvatar(
-                            backgroundColor: Colors.red,
+                            backgroundColor: Color.fromARGB(255, 171, 87, 182),
                             radius: 35,
                             child: Center(
                               child: Icon(
@@ -365,7 +382,7 @@ class Completed extends StatelessWidget {
                       Column(
                         children: [
                           CircleAvatar(
-                            backgroundColor: Colors.red,
+                            backgroundColor: Color.fromARGB(255, 171, 87, 182),
                             radius: 35,
                             child: Center(
                               child: Icon(
@@ -390,7 +407,7 @@ class Completed extends StatelessWidget {
                       Column(
                         children: [
                           CircleAvatar(
-                            backgroundColor: Colors.red,
+                            backgroundColor: Color.fromARGB(255, 171, 87, 182),
                             radius: 35,
                             child: Center(
                               child: Icon(

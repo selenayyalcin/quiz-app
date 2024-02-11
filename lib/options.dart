@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class Options extends StatelessWidget {
-  String option;
-  Options({super.key, required this.option});
+  final String option;
+  final String? groupValue;
+  final ValueChanged<String?> onChanged;
+
+  const Options({
+    Key? key,
+    required this.option,
+    required this.groupValue,
+    required this.onChanged,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +21,12 @@ class Options extends StatelessWidget {
           height: 50,
           width: 325,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(
-                  width: 3, color: const Color.fromARGB(255, 218, 126, 126))),
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(
+              width: 3,
+              color: const Color.fromARGB(255, 171, 87, 182),
+            ),
+          ),
           child: Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -26,7 +37,11 @@ class Options extends StatelessWidget {
                     option,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Radio(value: option, groupValue: 2, onChanged: (val) {})
+                  Radio<String>(
+                    value: option,
+                    groupValue: groupValue,
+                    onChanged: onChanged,
+                  ),
                 ],
               ),
             ),
