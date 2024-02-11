@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:quiz_app/completed_page.dart';
+import 'package:quiz_app/options.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,7 +15,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List responseData = [];
+  List<String> shuffledOptions = [];
   int number = 0;
+  late Timer _timer;
+  int _secondRemaining = 15;
+
   Future api() async {
     final response =
         await http.get(Uri.parse("https://opentdb.com/api.php?amount=10"));
@@ -20,6 +27,7 @@ class _HomePageState extends State<HomePage> {
       var data = jsonDecode(response.body)['results'];
       setState(() {
         responseData = data;
+        updateShuffleOption();
       });
     }
   }
@@ -29,6 +37,7 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     api();
+    startTimer();
   }
 
   @override
@@ -101,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  const Positioned(
+                  Positioned(
                     bottom: 210,
                     left: 140,
                     child: CircleAvatar(
@@ -109,8 +118,8 @@ class _HomePageState extends State<HomePage> {
                       backgroundColor: Colors.white,
                       child: Center(
                           child: Text(
-                        '15',
-                        style: TextStyle(
+                        _secondRemaining.toString(),
+                        style: const TextStyle(
                             color: Color.fromARGB(255, 180, 66, 66),
                             fontSize: 25),
                       )),
@@ -120,6 +129,17 @@ class _HomePageState extends State<HomePage> {
               )),
           const SizedBox(
             height: 1,
+          ),
+          Column(
+            children: (responseData.isNotEmpty &&
+                    responseData[number]['incorrect_answers'] != null)
+                ? shuffledOptions.map((option) {
+                    return Options(option: option.toString());
+                  }).toList()
+                : [],
+          ),
+          const SizedBox(
+            height: 30,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -133,8 +153,7 @@ class _HomePageState extends State<HomePage> {
                 elevation: 5,
               ),
               onPressed: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => Completed()));
+                nextQuestion();
               },
               child: const Text(
                 'Next',
@@ -148,5 +167,50 @@ class _HomePageState extends State<HomePage> {
         ]),
       ),
     );
+  }
+
+  void nextQuestion() {
+    if (number == 9) {
+      completed();
+    }
+    setState(() {
+      number += 1;
+      updateShuffleOption();
+      _secondRemaining = 15;
+    });
+  }
+
+  void completed() {
+    Navigator.pushReplacement(context as BuildContext,
+        MaterialPageRoute(builder: (context) => Completed()));
+  }
+
+  void updateShuffleOption() {
+    setState(() {
+      shuffledOptions = shuffleOption([
+        responseData[number]['correct_answer'],
+        ...(responseData[number]['incorrect_answers'] as List)
+      ]);
+    });
+  }
+
+  List<String> shuffleOption(List<String> option) {
+    List<String> shuffledOptions = List.from(option);
+    shuffledOptions.shuffle();
+    return shuffledOptions;
+  }
+
+  void startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_secondRemaining > 0) {
+          _secondRemaining--;
+        } else {
+          nextQuestion();
+          _secondRemaining = 15;
+          updateShuffleOption();
+        }
+      });
+    });
   }
 }
