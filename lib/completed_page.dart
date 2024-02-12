@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/home_page.dart';
 import 'package:quiz_app/quiz_page.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:share/share.dart';
+import 'dart:typed_data';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:quiz_app/review_answer_page.dart';
+
+import 'package:syncfusion_flutter_pdf/pdf.dart';
+
+import 'mobile.dart';
 
 class Completed extends StatelessWidget {
   final int trueAnswer;
   final int falseAnswer;
+  List responseData;
+  final List<String>? selectedAnswers;
   //int score = trueAnswer * 10;
 
-  Completed({super.key, required this.falseAnswer, required this.trueAnswer});
+  Completed(
+      {super.key,
+      required this.falseAnswer,
+      required this.trueAnswer,
+      required this.responseData,
+      required this.selectedAnswers});
 
   @override
   Widget build(BuildContext context) {
@@ -254,9 +265,6 @@ class Completed extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(
-            height: 2,
-          ),
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -273,7 +281,7 @@ class Completed extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => QuizPage(),
+                                  builder: (context) => const QuizPage(),
                                 ),
                               );
                             },
@@ -302,23 +310,38 @@ class Completed extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const Column(
+                      Column(
                         children: [
-                          CircleAvatar(
-                            backgroundColor: Color.fromARGB(255, 171, 87, 182),
-                            radius: 35,
-                            child: Center(
-                              child: Icon(
-                                Icons.visibility_rounded,
-                                size: 35,
-                                color: Colors.white,
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ReviewAnswerPage(
+                                          responseData: responseData,
+                                          trueAnswer: trueAnswer,
+                                          falseAnswer: falseAnswer,
+                                          selectedAnswers: selectedAnswers,
+                                        )),
+                              );
+                            },
+                            child: const CircleAvatar(
+                              backgroundColor:
+                                  Color.fromARGB(255, 171, 87, 182),
+                              radius: 35,
+                              child: Center(
+                                child: Icon(
+                                  Icons.visibility_rounded,
+                                  size: 35,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
-                          Text(
+                          const Text(
                             'Review Answer',
                             style: TextStyle(
                               fontSize: 15,
@@ -368,7 +391,7 @@ class Completed extends StatelessWidget {
                             radius: 35,
                             child: GestureDetector(
                               onTap: () {
-                                _createPDF(context);
+                                _createPDF();
                               },
                               child: const Center(
                                 child: Icon(
@@ -461,24 +484,13 @@ class Completed extends StatelessWidget {
     );
   }
 
-  Future<void> _createPDF(BuildContext context) async {
-    final pdf = pw.Document();
+  Future<void> _createPDF() async {
+    PdfDocument document = PdfDocument();
+    final page = document.pages.add();
 
-    pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) {
-          return pw.Center(
-            child: pw.Text('Your Score: ${trueAnswer * 10}pt'),
-          );
-        },
-      ),
-    );
+    List<int> bytes = document.save();
+    //document.dispose();
 
-    final output = await getTemporaryDirectory();
-    final file = File('${output.path}/example.pdf');
-
-    await file.writeAsBytes(await pdf.save());
-
-    Share.shareFiles(['${file.path}'], text: 'Your Score PDF');
+    saveAndLaunchFile(bytes, 'Output.pdf');
   }
 }

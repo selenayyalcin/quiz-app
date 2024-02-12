@@ -23,6 +23,7 @@ class _QuizPageState extends State<QuizPage> {
   String? selectedValue;
   int trueAnswer = 0;
   int falseAnswer = 0;
+  List<String>? selectedAnswers = [];
 
   Future api() async {
     final response =
@@ -38,7 +39,6 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     api();
     startTimer();
@@ -132,6 +132,7 @@ class _QuizPageState extends State<QuizPage> {
                       onChanged: (value) {
                         setState(() {
                           selectedValue = value;
+                          selectedAnswers!.add(value.toString());
                           isTrue();
                         });
                       },
@@ -146,7 +147,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: const EdgeInsets.symmetric(horizontal: 18),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: const Color.fromARGB(255, 171, 87, 182),
+                backgroundColor: const Color.fromARGB(255, 171, 87, 182),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 shape: RoundedRectangleBorder(
@@ -184,12 +185,13 @@ class _QuizPageState extends State<QuizPage> {
 
   void completed() {
     Navigator.pushReplacement(
-        context as BuildContext,
+        context,
         MaterialPageRoute(
             builder: (context) => Completed(
-                  trueAnswer: trueAnswer,
-                  falseAnswer: falseAnswer,
-                )));
+                trueAnswer: trueAnswer,
+                falseAnswer: falseAnswer,
+                responseData: responseData,
+                selectedAnswers: selectedAnswers)));
   }
 
   void updateShuffleOption() {
@@ -208,7 +210,7 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (_secondRemaining > 0) {
           _secondRemaining--;
