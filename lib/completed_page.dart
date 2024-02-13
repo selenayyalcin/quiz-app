@@ -485,12 +485,36 @@ class Completed extends StatelessWidget {
   }
 
   Future<void> _createPDF() async {
-    PdfDocument document = PdfDocument();
-    final page = document.pages.add();
+    final PdfDocument document = PdfDocument();
+    final PdfPage page = document.pages.add();
+    final PdfFont font = PdfStandardFont(PdfFontFamily.helvetica, 20);
 
-    List<int> bytes = document.save();
-    //document.dispose();
+    final PdfGraphics graphics = page.graphics;
 
-    saveAndLaunchFile(bytes, 'Output.pdf');
+    drawScoreScreen(graphics, font);
+
+    final List<int> bytes = document.save();
+
+    document.dispose();
+
+    saveAndLaunchFile(bytes, 'Score.pdf');
+  }
+
+  void drawScoreScreen(PdfGraphics graphics, PdfFont font) {
+    graphics.drawString('Your Score: ${trueAnswer * 10} pt', font,
+        brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+        bounds: const Rect.fromLTWH(0, 0, 500, 50));
+    graphics.drawString(
+      'Correct Answers: $trueAnswer',
+      font,
+      brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+      bounds: const Rect.fromLTWH(50, 80, 200, 20),
+    );
+    graphics.drawString(
+      'Wrong Answers: $falseAnswer',
+      font,
+      brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+      bounds: const Rect.fromLTWH(50, 110, 200, 20),
+    );
   }
 }

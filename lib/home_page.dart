@@ -35,7 +35,8 @@ class HomePage extends StatelessWidget {
                   },
                   child: const Text(
                     'Start Quiz',
-                    style: TextStyle(color: Color.fromARGB(255, 171, 87, 182)),
+                    style: TextStyle(
+                        color: Color.fromARGB(255, 171, 87, 182), fontSize: 20),
                   ),
                 ),
               ),
