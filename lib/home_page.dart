@@ -27,11 +27,16 @@ class HomePage extends StatelessWidget {
             children: [
               SizedBox(
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const QuizPage()),
-                    );
+                  onPressed: () async {
+                    String? userName = await _getUserName(context);
+                    if (userName != null) {
+                      // ignore: use_build_context_synchronously
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => QuizPage(userName: userName)),
+                      );
+                    }
                   },
                   child: const Text(
                     'Start Quiz',
@@ -45,6 +50,40 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Future<String?> _getUserName(BuildContext context) async {
+    String? name = await showDialog(
+      context: context,
+      builder: (context) => GetNameDialog(),
+    );
+
+    return name;
+  }
+}
+
+class GetNameDialog extends StatelessWidget {
+  final TextEditingController _nameController = TextEditingController();
+
+  GetNameDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Enter your name'),
+      content: TextField(controller: _nameController),
+      actions: [
+        ElevatedButton(
+          onPressed: () {
+            String name = _nameController.text;
+            if (name.isNotEmpty) {
+              Navigator.pop(context, name);
+            }
+          },
+          child: const Text('Save'),
+        ),
+      ],
     );
   }
 }

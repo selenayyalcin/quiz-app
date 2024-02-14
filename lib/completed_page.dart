@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/home_page.dart';
+import 'package:quiz_app/leaderboard_page.dart';
 import 'package:quiz_app/quiz_page.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'dart:typed_data';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:quiz_app/review_answer_page.dart';
+import 'package:flutter/services.dart';
+import 'package:quiz_app/score_database.dart';
+import 'package:share/share.dart';
 
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
@@ -16,6 +20,8 @@ class Completed extends StatelessWidget {
   final int falseAnswer;
   List responseData;
   final List<String>? selectedAnswers;
+  final String userName;
+
   //int score = trueAnswer * 10;
 
   Completed(
@@ -23,7 +29,8 @@ class Completed extends StatelessWidget {
       required this.falseAnswer,
       required this.trueAnswer,
       required this.responseData,
-      required this.selectedAnswers});
+      required this.selectedAnswers,
+      required this.userName});
 
   @override
   Widget build(BuildContext context) {
@@ -281,7 +288,9 @@ class Completed extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const QuizPage(),
+                                  builder: (context) => QuizPage(
+                                    userName: userName,
+                                  ),
                                 ),
                               );
                             },
@@ -350,23 +359,29 @@ class Completed extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const Column(
+                      Column(
                         children: [
-                          CircleAvatar(
-                            backgroundColor: Color.fromARGB(255, 171, 87, 182),
-                            radius: 35,
-                            child: Center(
-                              child: Icon(
-                                Icons.share,
-                                size: 35,
-                                color: Colors.white,
+                          InkWell(
+                            onTap: () {
+                              _shareScore(context);
+                            },
+                            child: const CircleAvatar(
+                              backgroundColor:
+                                  Color.fromARGB(255, 171, 87, 182),
+                              radius: 35,
+                              child: Center(
+                                child: Icon(
+                                  Icons.share,
+                                  size: 35,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
-                          Text(
+                          const Text(
                             'Share Score',
                             style: TextStyle(
                               fontSize: 15,
@@ -448,23 +463,34 @@ class Completed extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const Column(
+                      Column(
                         children: [
-                          CircleAvatar(
-                            backgroundColor: Color.fromARGB(255, 171, 87, 182),
-                            radius: 35,
-                            child: Center(
-                              child: Icon(
-                                Icons.settings_applications,
-                                size: 35,
-                                color: Colors.white,
+                          InkWell(
+                            onTap: () {
+                              ScoreDatabase.insertScore(
+                                  userName, trueAnswer * 10);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LeaderboardPage()));
+                            },
+                            child: const CircleAvatar(
+                              backgroundColor:
+                                  Color.fromARGB(255, 171, 87, 182),
+                              radius: 35,
+                              child: Center(
+                                child: Icon(
+                                  Icons.settings_applications,
+                                  size: 35,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
-                          Text(
+                          const Text(
                             'Leaderboard',
                             style: TextStyle(
                               fontSize: 15,
@@ -482,6 +508,10 @@ class Completed extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _shareScore(BuildContext context) {
+    Share.share('My score is: ${trueAnswer * 10}');
   }
 
   Future<void> _createPDF() async {

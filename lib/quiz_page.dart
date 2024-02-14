@@ -7,10 +7,12 @@ import 'package:quiz_app/completed_page.dart';
 import 'package:quiz_app/options.dart';
 
 class QuizPage extends StatefulWidget {
-  const QuizPage({super.key});
+  final String userName;
+
+  const QuizPage({super.key, required this.userName});
 
   @override
-  State<QuizPage> createState() => _QuizPageState();
+  State<QuizPage> createState() => _QuizPageState(userName: userName);
 }
 
 class _QuizPageState extends State<QuizPage> {
@@ -24,6 +26,9 @@ class _QuizPageState extends State<QuizPage> {
   int trueAnswer = 0;
   int falseAnswer = 0;
   List<String>? selectedAnswers = [];
+  String userName;
+
+  _QuizPageState({required this.userName});
 
   Future api() async {
     final response =
@@ -188,10 +193,12 @@ class _QuizPageState extends State<QuizPage> {
         context,
         MaterialPageRoute(
             builder: (context) => Completed(
-                trueAnswer: trueAnswer,
-                falseAnswer: falseAnswer,
-                responseData: responseData,
-                selectedAnswers: selectedAnswers)));
+                  trueAnswer: trueAnswer,
+                  falseAnswer: falseAnswer,
+                  responseData: responseData,
+                  selectedAnswers: selectedAnswers,
+                  userName: userName,
+                )));
   }
 
   void updateShuffleOption() {
