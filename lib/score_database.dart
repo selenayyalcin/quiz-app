@@ -1,6 +1,7 @@
 import 'package:quiz_app/score_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:collection/collection.dart';
 
 class ScoreDatabase {
   static late Database _database;
@@ -36,5 +37,20 @@ class ScoreDatabase {
         score: scoreMaps[i]['score'],
       );
     });
+  }
+
+  static Future<void> updateScore(String name, int score) async {
+    List<Score> scores = await getScores();
+    Score? existingScore = scores.firstWhereOrNull((s) => s.name == name);
+    if (existingScore != null) {
+      await _database.update(
+        'scores',
+        {'score': score},
+        where: 'name = ?',
+        whereArgs: [name],
+      );
+    } else {
+      await insertScore(name, score);
+    }
   }
 }
