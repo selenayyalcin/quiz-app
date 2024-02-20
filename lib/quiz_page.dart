@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:quiz_app/completed_page.dart';
 import 'package:quiz_app/options.dart';
+import 'package:html/parser.dart';
 
 class QuizPage extends StatefulWidget {
   final String userName;
@@ -19,6 +19,7 @@ class _QuizPageState extends State<QuizPage> {
   List responseData = [];
   List<String> shuffledOptions = [];
   int number = 0;
+  // ignore: unused_field
   late Timer _timer;
   int _secondRemaining = 15;
   int questionNumber = 1;
@@ -101,7 +102,10 @@ class _QuizPageState extends State<QuizPage> {
                             height: 25,
                           ),
                           Text(responseData.isNotEmpty
-                              ? responseData[number]['question']
+                              ? decodeHtml(
+                                  removeHTMLTags(
+                                      responseData[number]['question']),
+                                )
                               : ''),
                         ]),
                       ),
@@ -236,5 +240,24 @@ class _QuizPageState extends State<QuizPage> {
     } else {
       falseAnswer++;
     }
+  }
+
+  String removeHTMLTags(String htmlString) {
+    final document = parse(htmlString);
+    return document.body!.text;
+  }
+
+  String cleanHtml(String html) {
+    RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+    return html.replaceAll(exp, '');
+  }
+
+  String decodeHtml(String html) {
+    return html
+        .replaceAll("&amp;", "&")
+        .replaceAll("&lt;", "<")
+        .replaceAll("&gt;", ">")
+        .replaceAll("&quot;", "\"")
+        .replaceAll("&#39;", "'");
   }
 }

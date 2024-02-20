@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/home_page.dart';
 import 'package:quiz_app/quiz_page.dart';
+import 'package:html/parser.dart';
 
 class ReviewAnswerPage extends StatelessWidget {
   final List responseData;
@@ -45,7 +46,7 @@ class ReviewAnswerPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '$question',
+                    '${removeHTMLTags(question)}',
                   ),
                   Row(
                     children: [
@@ -87,5 +88,10 @@ class ReviewAnswerPage extends StatelessWidget {
         child: const Icon(Icons.home),
       ),
     );
+  }
+
+  String removeHTMLTags(String htmlString) {
+    final document = parse(htmlString);
+    return document.body!.text;
   }
 }
