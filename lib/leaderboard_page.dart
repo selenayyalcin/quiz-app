@@ -8,7 +8,10 @@ class LeaderboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Leaderboard')),
+      backgroundColor: const Color.fromARGB(255, 171, 87, 182),
+      appBar: AppBar(
+          title: const Text('Leaderboard'),
+          backgroundColor: const Color.fromARGB(255, 171, 87, 182)),
       body: FutureBuilder<List<Score>>(
         future: ScoreDatabase.getScores(),
         builder: (context, snapshot) {
@@ -23,6 +26,9 @@ class LeaderboardPage extends StatelessWidget {
           }
 
           final List<String> addedNames = [];
+          int number = 0;
+
+          snapshot.data!.sort((a, b) => b.score.compareTo(a.score));
 
           return ListView.builder(
             itemCount: snapshot.data!.length,
@@ -31,9 +37,17 @@ class LeaderboardPage extends StatelessWidget {
 
               if (!addedNames.contains(score.name)) {
                 addedNames.add(score.name);
+                number++;
                 return ListTile(
-                  title: Text(score.name),
-                  subtitle: Text('Score: ${score.score}'),
+                  leading: Text(
+                    '$number.',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  title: Text(score.name,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 18)),
+                  subtitle: Text('Score: ${score.score}',
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
                 );
               } else {
                 return const SizedBox();
