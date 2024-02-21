@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/home_page.dart';
-import 'package:quiz_app/quiz_page.dart';
 import 'package:html/parser.dart';
 
 class ReviewAnswerPage extends StatelessWidget {
@@ -10,11 +9,12 @@ class ReviewAnswerPage extends StatelessWidget {
   final List<String>? selectedAnswers;
 
   const ReviewAnswerPage(
-      {super.key,
+      {Key? key,
       required this.responseData,
       required this.trueAnswer,
       required this.falseAnswer,
-      required this.selectedAnswers});
+      required this.selectedAnswers})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +29,10 @@ class ReviewAnswerPage extends StatelessWidget {
         itemBuilder: (context, index) {
           final question = responseData[index]['question'];
           final correctAnswer = responseData[index]['correct_answer'];
-
-          //final userAnswer = responseData[index]['answer'];
+          final userAnswer =
+              selectedAnswers != null && selectedAnswers!.length > index
+                  ? selectedAnswers![index]
+                  : 'Empty';
 
           return Card(
             margin: const EdgeInsets.all(8),
@@ -67,7 +69,13 @@ class ReviewAnswerPage extends StatelessWidget {
                             color: Color.fromARGB(255, 171, 87, 182),
                             fontWeight: FontWeight.w500),
                       ),
-                      Text(selectedAnswers?[index] ?? ''),
+                      Text(
+                        userAnswer.isNotEmpty ? userAnswer : 'Empty',
+                        style: TextStyle(
+                          color:
+                              userAnswer.isNotEmpty ? Colors.black : Colors.red,
+                        ),
+                      ),
                     ],
                   ),
                 ],

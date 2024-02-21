@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/home_page.dart';
 import 'package:quiz_app/leaderboard_page.dart';
 import 'package:quiz_app/quiz_page.dart';
+// ignore: unused_import
 import 'dart:io';
+// ignore: unused_import
 import 'package:path_provider/path_provider.dart';
+// ignore: unused_import
 import 'dart:typed_data';
+// ignore: unused_import
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:quiz_app/review_answer_page.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +19,7 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import 'mobile.dart';
 
+// ignore: must_be_immutable
 class Completed extends StatelessWidget {
   final int trueAnswer;
   final int falseAnswer;
@@ -142,9 +147,9 @@ class Completed extends StatelessWidget {
                                                   255, 171, 87, 182),
                                             ),
                                           ),
-                                          const Text(
-                                            '100%',
-                                            style: TextStyle(
+                                          Text(
+                                            '%${(trueAnswer + falseAnswer) * 10}',
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 20,
                                               color: Color.fromARGB(
