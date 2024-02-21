@@ -28,6 +28,7 @@ class _QuizPageState extends State<QuizPage> {
   int falseAnswer = 0;
   List<String>? selectedAnswers = [];
   String userName;
+  List<int> numbers = [];
 
   _QuizPageState({required this.userName});
 
@@ -136,12 +137,11 @@ class _QuizPageState extends State<QuizPage> {
                     responseData[number]['incorrect_answers'] != null)
                 ? shuffledOptions.map((option) {
                     return Options(
-                      option: option.toString(),
+                      option: decodeHtml(removeHTMLTags(option.toString())),
                       groupValue: selectedValue,
                       onChanged: (value) {
                         setState(() {
                           selectedValue = value;
-                          selectedAnswers!.add(value.toString());
                           isTrue();
                         });
                       },
@@ -164,6 +164,12 @@ class _QuizPageState extends State<QuizPage> {
                 elevation: 5,
               ),
               onPressed: () {
+                if (selectedValue != null) {
+                  selectedAnswers!.add(selectedValue.toString());
+                } else {
+                  selectedAnswers!.add(null.toString());
+                }
+                selectedValue = null;
                 nextQuestion();
               },
               child: const Text(
@@ -197,12 +203,12 @@ class _QuizPageState extends State<QuizPage> {
         context,
         MaterialPageRoute(
             builder: (context) => Completed(
-                  trueAnswer: trueAnswer,
-                  falseAnswer: falseAnswer,
-                  responseData: responseData,
-                  selectedAnswers: selectedAnswers,
-                  userName: userName,
-                )));
+                trueAnswer: trueAnswer,
+                falseAnswer: falseAnswer,
+                responseData: responseData,
+                selectedAnswers: selectedAnswers,
+                userName: userName,
+                numbers: numbers)));
   }
 
   void updateShuffleOption() {

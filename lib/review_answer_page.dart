@@ -7,14 +7,15 @@ class ReviewAnswerPage extends StatelessWidget {
   final int trueAnswer;
   final int falseAnswer;
   final List<String>? selectedAnswers;
+  final List<int>? numbers;
 
   const ReviewAnswerPage(
-      {Key? key,
+      {super.key,
       required this.responseData,
       required this.trueAnswer,
       required this.falseAnswer,
-      required this.selectedAnswers})
-      : super(key: key);
+      required this.selectedAnswers,
+      required this.numbers});
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +31,7 @@ class ReviewAnswerPage extends StatelessWidget {
           final question = responseData[index]['question'];
           final correctAnswer = responseData[index]['correct_answer'];
           final userAnswer =
-              selectedAnswers != null && selectedAnswers!.length > index
-                  ? selectedAnswers![index]
-                  : 'Empty';
+              selectedAnswers != null ? selectedAnswers![index] : 'Empty';
 
           return Card(
             margin: const EdgeInsets.all(8),
@@ -48,7 +47,7 @@ class ReviewAnswerPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${removeHTMLTags(question)}',
+                    removeHTMLTags(question),
                   ),
                   Row(
                     children: [
@@ -70,7 +69,7 @@ class ReviewAnswerPage extends StatelessWidget {
                             fontWeight: FontWeight.w500),
                       ),
                       Text(
-                        userAnswer.isNotEmpty ? userAnswer : 'Empty',
+                        userAnswer,
                         style: TextStyle(
                           color:
                               userAnswer.isNotEmpty ? Colors.black : Colors.red,

@@ -26,6 +26,7 @@ class Completed extends StatelessWidget {
   List responseData;
   final List<String>? selectedAnswers;
   final String userName;
+  final List<int>? numbers;
 
   //int score = trueAnswer * 10;
 
@@ -35,7 +36,8 @@ class Completed extends StatelessWidget {
       required this.trueAnswer,
       required this.responseData,
       required this.selectedAnswers,
-      required this.userName});
+      required this.userName,
+      required this.numbers});
 
   @override
   Widget build(BuildContext context) {
@@ -332,11 +334,11 @@ class Completed extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ReviewAnswerPage(
-                                          responseData: responseData,
-                                          trueAnswer: trueAnswer,
-                                          falseAnswer: falseAnswer,
-                                          selectedAnswers: selectedAnswers,
-                                        )),
+                                        responseData: responseData,
+                                        trueAnswer: trueAnswer,
+                                        falseAnswer: falseAnswer,
+                                        selectedAnswers: selectedAnswers,
+                                        numbers: numbers)),
                               );
                             },
                             child: const CircleAvatar(
